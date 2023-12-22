@@ -33,7 +33,7 @@ clock = pygame.time.Clock()
 
 # Тут опишите все классы игры
 class GameObject():
-    """Класс, от которого наследуются все объекты игры"""
+    """Класс, от которого наследуются все объекты игры."""
 
     def __init__(self):
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
@@ -45,10 +45,9 @@ class GameObject():
 
 
 class Snake(GameObject):
-    """Класс объекта змейки"""
+    """Класс объекта змейки."""
 
     def __init__(self):
-        self.i = 0
         self.length = 1
         self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.positions = [self.position]
@@ -99,11 +98,11 @@ class Snake(GameObject):
             pygame.draw.rect(surface, BOARD_BACKGROUND_COLOR, last_rect)
 
     def get_head_position(self):
-        """Метод возвращения позиции головы змейки"""
+        """Метод возвращения позиции головы змейки."""
         return self.positions[0]
 
     def reset(self):
-        """Метод сбрасывания змейки в начальное состояние после столкновения"""
+        """Метод сбрасывания змейки в начальное состояние при столкновении."""
         self.length = 1
         self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.direction = choice((UP, DOWN, LEFT, RIGHT))
@@ -150,7 +149,7 @@ def handle_keys(game_object):
 
 
 def main():
-    """Основная функция, которая содержит всю логику игры"""
+    """Основная функция, которая содержит всю логику игры."""
     # Тут нужно создать экземпляры классов
     snake = Snake()
     apple = Apple()
