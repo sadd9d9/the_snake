@@ -21,8 +21,7 @@ SPEED = 20
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
 pygame.display.set_caption(
-    'Змейка. Выход - Esc. '
-    'Ускорение - 1. Замедление - 2.'
+    'Змейка. Выход - Esc. Ускорение - 1. Замедление - 2.'
 )
 
 clock = pygame.time.Clock()
@@ -66,7 +65,7 @@ class Snake(GameObject):
         new_width = (head[0] + GRID_SIZE * self.direction[0]) % SCREEN_WIDTH
         new_height = (head[1] + GRID_SIZE * self.direction[1]) % SCREEN_HEIGHT
         if (new_width, new_height) in self.positions[2:]:
-            print(f'Ты проиграл. Длина - {self.length}')
+            print(f'Ты проиграл. Длина змейки - {self.length}')
             self.reset()
             screen.fill(BOARD_BACKGROUND_COLOR)
         else:
