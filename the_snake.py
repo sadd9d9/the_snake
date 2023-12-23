@@ -20,8 +20,10 @@ SPEED = 20
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
-pygame.display.set_caption('Змейка. Выход - Esc. '
-                           'Ускорение - 1. Замедление - 2.')
+pygame.display.set_caption(
+    'Змейка. Выход - Esc. '
+    'Ускорение - 1. Замедление - 2.'
+)
 
 clock = pygame.time.Clock()
 
