@@ -20,7 +20,8 @@ SPEED = 20
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 
-pygame.display.set_caption('Змейка. Выход на Esc.')
+pygame.display.set_caption('Змейка. Выход - Esc. '
+                           'Ускорение - 1. Замедление - 2.')
 
 clock = pygame.time.Clock()
 
@@ -50,14 +51,12 @@ class Snake(GameObject):
     def __init__(self, body_color=(0, 255, 0), fg_color=(93, 216, 228)):
         super().__init__(body_color, fg_color)
         self.reset()
-        self.next_direction = None
         self.last = None
 
-    def update_direction(self):
+    def update_direction(self, new_direction=None):
         """Метод обновления направления после нажатия на кнопку."""
-        if self.next_direction:
-            self.direction = self.next_direction
-            self.next_direction = None
+        if new_direction:
+            self.direction = new_direction
 
     def move(self):
         """Метод обновления позиции змейки."""
@@ -65,6 +64,7 @@ class Snake(GameObject):
         new_width = (head[0] + GRID_SIZE * self.direction[0]) % SCREEN_WIDTH
         new_height = (head[1] + GRID_SIZE * self.direction[1]) % SCREEN_HEIGHT
         if (new_width, new_height) in self.positions[2:]:
+            print(f'Ты проиграл. Длина - {self.length}')
             self.reset()
             screen.fill(BOARD_BACKGROUND_COLOR)
         else:
@@ -75,8 +75,7 @@ class Snake(GameObject):
     def draw(self, surface):
         """Метод отрисовки змейки на экране."""
         # Отрисовка головы змейки
-        head = self.positions[0]
-        super().draw_cell(surface, head)
+        self.draw_cell(surface, self.positions[0])
 
         # Затирание последнего сегмента
         if self.last:
@@ -119,27 +118,45 @@ class Apple(GameObject):
 
     def draw(self, surface):
         """Метод отрисовки яблока на экране."""
-        super().draw_cell(surface, self.position)
+        self.draw_cell(surface, self.position)
 
 
 def handle_keys(game_object):
     """Функция обработки действий пользователя."""
+    global SPEED
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit('Завершение игры.')
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP and game_object.direction != DOWN:
-                game_object.next_direction = UP
-            elif event.key == pygame.K_DOWN and game_object.direction != UP:
-                game_object.next_direction = DOWN
-            elif event.key == pygame.K_LEFT and game_object.direction != RIGHT:
-                game_object.next_direction = LEFT
-            elif event.key == pygame.K_RIGHT and game_object.direction != LEFT:
-                game_object.next_direction = RIGHT
-            elif event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit('Завершение игры.')
+            elif event.key == pygame.K_1:
+                if SPEED < 35:
+                    SPEED += 5
+                    print(f'Скорость: {SPEED // 5}')
+            elif event.key == pygame.K_2:
+                if SPEED > 5:
+                    SPEED -= 5
+                    print(f'Скорость: {SPEED // 5}')
+            game_object.update_direction(CONTROL_DICT.get(
+                (game_object.direction, event.key),
+                game_object.direction
+            ))
+
+
+CONTROL_DICT = {
+    (LEFT, pygame.K_UP): UP,
+    (RIGHT, pygame.K_UP): UP,
+    (LEFT, pygame.K_DOWN): DOWN,
+    (RIGHT, pygame.K_DOWN): DOWN,
+    (UP, pygame.K_LEFT): LEFT,
+    (DOWN, pygame.K_LEFT): LEFT,
+    (UP, pygame.K_RIGHT): RIGHT,
+    (DOWN, pygame.K_RIGHT): RIGHT
+}
 
 
 def main():
@@ -152,7 +169,6 @@ def main():
     while True:
         clock.tick(SPEED)
         handle_keys(snake)
-        snake.update_direction()
         snake.move()
         if apple.position == snake.get_head_position():
             snake.length += 1
