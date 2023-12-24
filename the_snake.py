@@ -4,8 +4,8 @@ from random import choice, randint
 import pygame
 
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
-GRID_SIZE = 20
+SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 960
+GRID_SIZE = 40
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
 GRID_HEIGHT = SCREEN_HEIGHT // GRID_SIZE
 
@@ -142,10 +142,10 @@ def handle_keys(game_object):
                 if SPEED > 5:
                     SPEED -= 5
                     print(f'Скорость: {SPEED // 5}')
-            game_object.update_direction(CONTROL_DICT.get(
+            return CONTROL_DICT.get(
                 (game_object.direction, event.key),
                 game_object.direction
-            ))
+            )
 
 
 CONTROL_DICT = {
@@ -164,12 +164,12 @@ def main():
     """Основная функция, которая содержит всю логику игры."""
     pygame.init()
 
-    snake = Snake()
+    snake = Snake(body_color=(0, 0, 255))
     apple = Apple(snake.positions)
 
     while True:
         clock.tick(SPEED)
-        handle_keys(snake)
+        snake.update_direction(handle_keys(snake))
         snake.move()
         if apple.position == snake.get_head_position():
             snake.length += 1
